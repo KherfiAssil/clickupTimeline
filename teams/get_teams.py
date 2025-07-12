@@ -2,7 +2,6 @@ import sys
 import os
 import requests
 
-# ✅ Ajoute le dossier parent au path pour trouver auth/
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from auth.oauth_handler import get_access_token

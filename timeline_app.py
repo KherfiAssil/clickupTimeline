@@ -9,7 +9,6 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# Palette de couleurs personnalisée
 TIMELINE_COLOR_SEQUENCE = [
     "#FFB347", "#AEC6CF", "#77DD77", "#CBAACB", "#FFD1DC",
     "#FDFD96", "#B39EB5", "#FF6961", "#03C03C", "#779ECB"
@@ -53,7 +52,6 @@ def build_timeline_data(df, view_mode):
             label = task_row["task_name"]
             textposition = "inside" if len(label) <= 25 else "outside"
             if view_mode in ["task", "detailed"]:
-                # Affiche task_id en transparent dans y_label
                 y_label = f"{initials} | {status.get(task_row.get('status', '').lower(), '')} | {priority.get(task_row.get('priority', '').lower(), '')}"
                 if task_row.get("task_id"):
                     y_label += f" | <span style='color:rgba(0,0,0,0.15)'>{task_row['task_id']}</span>"
@@ -306,7 +304,6 @@ def update_graph(granularity, view_mode, assignee_val, priority_val, status_val,
     if data.empty:
         return {}, "Aucune tâche ne correspond aux filtres."
     time_cfg = get_time_settings(granularity)
-    # Ajoute des icônes dans les labels pour l'info-bulle (hover)
     status_icons = {
         "to do": "📝", "selected for development": "🚦", "in progress": "⏳",
         "on hold": "⏸️", "review": "🔍", "done": "🆗", "complete": "🎉",
@@ -345,7 +342,6 @@ def update_graph(granularity, view_mode, assignee_val, priority_val, status_val,
     data["start date"] = data.apply(start_with_icon, axis=1)
     data["due date"] = data.apply(end_with_icon, axis=1)
 
-    # Ajoute la colonne task_name pour le hover avec une icône
     data["task_name"] = "📝 " + data["label"]
 
     fig = px.timeline(
@@ -360,10 +356,8 @@ def update_graph(granularity, view_mode, assignee_val, priority_val, status_val,
         text="task_name"
     )
 
-    # Réduit la hauteur des frises (barres) en réduisant la largeur des barres
-    fig.update_traces(textposition="outside", width=0.2)  # width < 1.0 réduit la hauteur des barres horizontales
+    fig.update_traces(textposition="outside", width=0.2)
 
-    # Renomme les colonnes dans les hover labels
     fig.update_traces(
     hovertemplate=(
         "📌 Task: %{customdata[0]}<br>"
@@ -445,7 +439,6 @@ def update_graph(granularity, view_mode, assignee_val, priority_val, status_val,
         ),
         dragmode=False
     )
-    # Ajoute la légende à l'extérieur du graphique via Dash
     legend_html = html.Div([
         html.B("📶 Statut"),
         html.Br(),
@@ -478,7 +471,6 @@ def update_graph(granularity, view_mode, assignee_val, priority_val, status_val,
         "maxWidth": "220px"
     })
     
-    # On retourne la figure ET la légende dans le message d'erreur (qui est un composant Dash)
     return fig, legend_html if not error else error
 
 if __name__ == "__main__":
